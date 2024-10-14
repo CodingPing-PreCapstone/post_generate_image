@@ -19,23 +19,20 @@
 
                 <label for="font">폰트 선택:</label>
                 <select id="font">
-                    <option value="Cafe24Dangdanghae-v2.0.ttf" style="font-family: 'Cafe24Dangdanghae';">
-                        Cafe24Dangdanghae</option>
-                    <option value="Cafe24Ohsquare-v2.0.ttf" style="font-family: 'Cafe24Ohsquare';">Cafe24Ohsquare
-                    </option>
-                    <option value="Cafe24Simplehae-v2.0.ttf" style="font-family: 'Cafe24Simplehae';">Cafe24Simplehae
-                    </option>
-                    <option value="NanumBarunGothic.ttf" style="font-family: 'NanumBarunGothic';">NanumBarunGothic
-                    </option>
-                    <option value="NanumBrush.ttf" style="font-family: 'NanumBrush';">NanumBrush</option>
-                    <option value="NanumMyeongjoExtraBold.ttf" style="font-family: 'NanumMyeongjoExtraBold';">
-                        NanumMyeongjoExtraBold</option>
-                    <option value="NanumSquareRoundEB.ttf" style="font-family: 'NanumSquareRoundEB';">NanumSquareRoundEB
-                    </option>
+                    <option value="Cafe24Dangdanghae-v2.0.ttf">Cafe24Dangdanghae</option>
+                    <option value="Cafe24Ohsquare-v2.0.ttf">Cafe24Ohsquare</option>
+                    <option value="Cafe24Simplehae-v2.0.ttf">Cafe24Simplehae</option>
+                    <option value="NanumBarunGothic.ttf">NanumBarunGothic</option>
+                    <option value="NanumBrush.ttf">NanumBrush</option>
+                    <option value="NanumMyeongjoExtraBold.ttf">NanumMyeongjoExtraBold</option>
+                    <option value="NanumSquareRoundEB.ttf">NanumSquareRoundEB</option>
                 </select>
 
                 <label for="textColor">텍스트 색상:</label>
                 <input type="color" id="textColor" value="#000000" />
+
+                <label for="borderColor">테두리 색상:</label>
+                <input type="color" id="borderColor" value="#ffffff" />
 
                 <label for="position">텍스트 위치:</label>
                 <select id="position">
@@ -45,10 +42,14 @@
                     <option value="bottom left">좌측 하단</option>
                     <option value="bottom right">우측 하단</option>
                 </select>
+
                 <label for="fontSize">텍스트 크기 (px):</label>
-                <input type="number" id="fontSize" value="30" min="10" max="100" step="5"/>
+                <input type="number" id="fontSize" value="30" min="10" max="100" step="5" />
 
                 <button type="submit">AI 이미지 생성</button>
+
+                <!-- 공백 추가 -->
+                <div style="height: 200px;"></div>
             </form>
         </div>
 
@@ -63,18 +64,18 @@
 
             const title = document.getElementById('title').value;
             const message = document.getElementById('message').value;
+            const instruction = document.getElementById('instruction').value;
             const font = document.getElementById('font').value;
             const textColor = document.getElementById('textColor').value;
+            const borderColor = document.getElementById('borderColor').value;
             const position = document.getElementById('position').value;
             const fontSize = parseInt(document.getElementById('fontSize').value, 10);
 
             try {
                 const response = await fetch('http://127.0.0.1:5000/generate', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ title, message, font, textColor, position, fontSize }),
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, message, instruction, font, textColor, borderColor, position, fontSize }),
                 });
 
                 const data = await response.json();
