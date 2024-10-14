@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Generator</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h1>AI 이미지 생성기</h1>
+            <form id="imageForm">
+                <input type="text" id="title" placeholder="키워드 입력" required />
+                <textarea id="message" placeholder="문구 생성 명령 입력" required></textarea>
+                <textarea id="instruction" placeholder="이미지 생성 부가 명령 입력"></textarea>
+
+                <label for="font">폰트 선택:</label>
+                <select id="font">
+                    <option value="Cafe24Dangdanghae-v2.0.ttf" style="font-family: 'Cafe24Dangdanghae';">
+                        Cafe24Dangdanghae</option>
+                    <option value="Cafe24Ohsquare-v2.0.ttf" style="font-family: 'Cafe24Ohsquare';">Cafe24Ohsquare
+                    </option>
+                    <option value="Cafe24Simplehae-v2.0.ttf" style="font-family: 'Cafe24Simplehae';">Cafe24Simplehae
+                    </option>
+                    <option value="NanumBarunGothic.ttf" style="font-family: 'NanumBarunGothic';">NanumBarunGothic
+                    </option>
+                    <option value="NanumBrush.ttf" style="font-family: 'NanumBrush';">NanumBrush</option>
+                    <option value="NanumMyeongjoExtraBold.ttf" style="font-family: 'NanumMyeongjoExtraBold';">
+                        NanumMyeongjoExtraBold</option>
+                    <option value="NanumSquareRoundEB.ttf" style="font-family: 'NanumSquareRoundEB';">NanumSquareRoundEB
+                    </option>
+                </select>
+
+                <label for="textColor">텍스트 색상:</label>
+                <input type="color" id="textColor" value="#000000" />
+
+                <label for="position">텍스트 위치:</label>
+                <select id="position">
+                    <option value="center">중앙</option>
+                    <option value="top left">좌측 상단</option>
+                    <option value="top right">우측 상단</option>
+                    <option value="bottom left">좌측 하단</option>
+                    <option value="bottom right">우측 하단</option>
+                </select>
+                <label for="fontSize">텍스트 크기 (px):</label>
+                <input type="number" id="fontSize" value="30" min="10" max="100" step="5"/>
+
+                <button type="submit">AI 이미지 생성</button>
+            </form>
+        </div>
+
+        <div class="right-panel">
+            <img id="resultImage" src="" alt="생성된 이미지가 여기에 표시됩니다." />
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('imageForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const title = document.getElementById('title').value;
+            const message = document.getElementById('message').value;
+            const font = document.getElementById('font').value;
+            const textColor = document.getElementById('textColor').value;
+            const position = document.getElementById('position').value;
+            const fontSize = parseInt(document.getElementById('fontSize').value, 10);
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ title, message, font, textColor, position, fontSize }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const timestamp = new Date().getTime();
+                    const imageUrl = `${data.imageUrl}?t=${timestamp}`;
+                    document.getElementById('resultImage').src = imageUrl;
+                } else {
+                    alert('이미지 생성 실패: ' + data.error);
+                }
+            } catch (error) {
+                console.error('오류 발생:', error);
+                alert('서버 요청 중 오류가 발생했습니다.');
+            }
+        });
+    </script>
+</body>
+
+</html>
