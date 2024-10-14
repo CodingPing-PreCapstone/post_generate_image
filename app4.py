@@ -9,7 +9,7 @@ app = Flask(__name__)
 from flask_cors import CORS
 CORS(app)
 
-openai.api_key = ''
+openai.api_key = '여기에 본인 api key 입력'
 
 STATIC_FOLDER = os.path.join(os.getcwd(), 'static')
 HTML_FOLDER = os.path.join(STATIC_FOLDER, 'html')
