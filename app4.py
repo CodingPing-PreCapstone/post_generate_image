@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, send_from_directory
-from PIL import Image, ImageDraw, ImageFont, ImageStat
+from PIL import Image, ImageDraw, ImageFont
 import openai
 import os
 import requests
@@ -9,7 +9,7 @@ app = Flask(__name__)
 from flask_cors import CORS
 CORS(app)
 
-openai.api_key = '여기에 본인 api key 입력'
+openai.api_key = ''
 
 STATIC_FOLDER = os.path.join(os.getcwd(), 'static')
 HTML_FOLDER = os.path.join(STATIC_FOLDER, 'html')
@@ -21,14 +21,14 @@ if not os.path.exists(STATIC_FOLDER):
 
 def translate_text(text, target_language):
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": f"Translate '{text}' to {target_language}"}]
+        model="gpt-4-turbo",
+        messages=[{"role": "user", "content": f"Translate '{text}' to {target_language}. Just print out the results."}]
     )
     return response.choices[0].message['content'].strip()
 
 def generate_short_message(message):
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4-turbo",
         messages=[{"role": "user", "content": f"{message}. within 20 letters"}]
     )
     return response.choices[0].message['content'].strip()
@@ -90,11 +90,16 @@ def generate_image():
         font_path = os.path.join(FONTS_FOLDER, font_name)
 
         translated_title = translate_text(title, "English")
+        print("translated_title: " + translated_title + "\n")
         translated_message = translate_text(message, "English")
+        print("translated_message: " + translated_message + "\n")
         translated_instruction = translate_text(instruction, "English")
+        print("translated_instruction: " + translated_instruction + "\n")
 
         summarized_message = generate_short_message(translated_message)
+        print("summarized_message: " + summarized_message + "\n")
         result_message = translate_text(summarized_message, "Korean")
+        print("result_message: " + result_message + "\n")
 
         prompt = (
             f"Generate an artistic image focusing on the theme: {translated_title}. "
@@ -102,10 +107,12 @@ def generate_image():
         )
 
         dalle_response = openai.Image.create(
+            model="dall-e-3",
             prompt=prompt,
             n=1,
-            size="512x512"
+            size="1024x1024"
         )
+
 
         image_url = dalle_response['data'][0]['url']
         image_response = requests.get(image_url)
