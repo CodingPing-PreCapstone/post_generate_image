@@ -13,7 +13,7 @@ from flask_cors import CORS
 CORS(app)
 
 # API 키 설정
-openai.api_key = '여기에 api 입력'
+openai.api_key = ''
 
 # 폴더 경로 설정
 STATIC_FOLDER = os.path.join(os.getcwd(), 'static')
