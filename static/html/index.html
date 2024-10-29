@@ -81,12 +81,13 @@
             const borderColor = document.getElementById('borderColor').value;
             const position = document.getElementById('position').value;
             const fontSize = parseInt(document.getElementById('fontSize').value, 10);
+            const painting_style = document.getElementById('painting_style').value;
 
             try {
                 const response = await fetch('http://127.0.0.1:5000/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, message, instruction, font, textColor, borderColor, position, fontSize }),
+                    body: JSON.stringify({ title, message, instruction, font, textColor, borderColor, position, fontSize, painting_style }),
                 });
 
                 const data = await response.json();
