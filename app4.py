@@ -127,9 +127,9 @@ def generate_image():
 
         # 화풍 스타일을 포함하여 DALL·E 프롬프트 생성
         prompt = (
-            f"Generate an image with a {painting_style} style. "
-            f"Focus on the theme: {translated_title}. "
-            f"Do not include any text, letters, or symbols. {translated_instruction}"
+            f"Create an artistic image in the style of {painting_style}. "
+            f"The theme is: {translated_title}. "
+            f"Exclude all text, letters, and symbols. Follow these additional instructions: {translated_instruction}"
         )
 
         # DALL·E API를 통해 이미지 생성
