@@ -1,4 +1,4 @@
-#10/28 수정
+#10/29 수정
 from flask import Flask, request, jsonify, send_from_directory
 from PIL import Image, ImageDraw, ImageFont
 import openai
@@ -99,7 +99,7 @@ def generate_image():
         position = data.get('position', 'center')
         font_size = data.get('fontSize', 50)
         #추가된 화풍 부분
-        painting_style = data.get('painting_style', 'digital_art')
+        painting_style = data.get('painting_style', '선택 안함')
 
         # 폰트 파일 경로 설정
         font_path = os.path.join(FONTS_FOLDER, font_name)
