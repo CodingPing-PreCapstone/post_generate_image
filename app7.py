@@ -5,6 +5,7 @@ import openai
 import os
 import requests
 from io import BytesIO
+import concurrent.futures
 
 app = Flask(__name__)
 from flask_cors import CORS
@@ -12,15 +13,20 @@ CORS(app)  # CORS 설정을 통해 외부 도메인에서 API에 접근 가능�
 
 # OpenAI API 키 설정
 openai.api_key = ''
+
 # 정적 파일, HTML 파일, 폰트 경로 설정
 STATIC_FOLDER = os.path.join(os.getcwd(), 'static')
 HTML_FOLDER = os.path.join(STATIC_FOLDER, 'html')
+REACT_FOLDER = os.path.join(STATIC_FOLDER, 'react')  # React 빌드 파일 경로 11/17
 FONTS_FOLDER = os.path.join(os.getcwd(), 'fonts')
 FONT_PATH = os.path.join(FONTS_FOLDER, 'NanumBrush.ttf')
 
 # 정적 폴더가 없는 경우 생성
 if not os.path.exists(STATIC_FOLDER):
     os.makedirs(STATIC_FOLDER)
+
+if not os.path.exists(REACT_FOLDER):  # React 폴더가 없는 경우 경고 출력 11/17
+    print("⚠️ React build 폴더가 없습니다. React 빌드 파일을 static/react에 배치하세요.")
 
 # 메시지를 짧게 요약하는 함수
 def generate_short_message(message):
@@ -137,8 +143,9 @@ def generate_image():
 
         # 기본 생성 이미지를 저장 (텍스트가 없는 원본 이미지)
         original_img_path = os.path.join(STATIC_FOLDER, 'original.jpg')
-        save_image_with_compression(img, original_img_path, 300 * 1024)  # 300KB 제한 적용
+        save_image_with_compression(img, original_img_path, 300 * 1024)  # 300KB 제한 적용, format='JPEG' 추가 
 
+    
         # 폰트를 불러옴 (기본 폰트로 대체 가능)
         try:
             font = ImageFont.truetype(font_path, font_size)
@@ -170,6 +177,15 @@ def generate_image():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+# React 정적 파일 제공 라우트 추가 11/17
+@app.route('/react')
+def serve_react():
+    return send_from_directory(os.path.join(STATIC_FOLDER, 'react'), 'index.html')
+
+@app.route('/react/<path:filename>')
+def serve_react_static(filename):
+    return send_from_directory(os.path.join(STATIC_FOLDER, 'react'), filename)
 
 # 정적 파일 제공
 @app.route('/static/<path:filename>')
